@@ -1,0 +1,166 @@
+/* ===== Couleurs et police du projet ===== */
+:root {
+  --color-bg: #f4f1ec;
+  --color-surface: #ffffff;
+  --color-text: #1f2430;
+  --color-muted: #6b7080;
+  --color-primary: #2f5d50;
+  --color-primary-dark: #234539;
+  --color-border: #e6e1d8;
+  --radius: 14px;
+
+  /* On remplace la couleur primaire de Bootstrap par la nôtre */
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 47, 93, 80;
+  --bs-body-font-family: 'DM Sans', system-ui, sans-serif;
+  --bs-body-color: var(--color-text);
+}
+
+body {
+  background: var(--color-bg);
+}
+
+h1, h2, h3, .card-title {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: var(--color-primary-dark);
+  --bs-btn-hover-border-color: var(--color-primary-dark);
+  --bs-btn-active-bg: var(--color-primary-dark);
+}
+
+.progress {
+  --bs-progress-bar-bg: var(--color-primary);
+  height: 10px;
+  border-radius: 99px;
+}
+
+/* ===== En-tête ===== */
+.dashboard-header__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-header__title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 0;
+}
+
+/* ===== Cartes de stats ===== */
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  border-top: 4px solid var(--accent);
+  height: 100%;
+}
+
+.stat-card--primary { --accent: var(--color-primary); }
+.stat-card--success { --accent: var(--bs-success); }
+.stat-card--danger  { --accent: var(--bs-danger); }
+
+.stat-card__label {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.stat-card__value {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* ===== Formulaire ===== */
+.form-card {
+  border-radius: var(--radius);
+  position: sticky;
+  top: 1rem;
+}
+
+/* ===== Filtre ===== */
+.task-filter {
+  display: inline-flex;
+  background: var(--color-border);
+  border-radius: 99px;
+  padding: 3px;
+}
+
+.task-filter button {
+  border: 0;
+  background: transparent;
+  padding: 0.3rem 0.85rem;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.task-filter button.active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* ===== Carte d'une tâche ===== */
+.task-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-left: 5px solid var(--bs-success);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(31, 36, 48, 0.08);
+}
+
+.task-card--warning { border-left-color: var(--bs-warning); }
+.task-card--danger  { border-left-color: var(--bs-danger); }
+
+.task-card--done {
+  opacity: 0.6;
+}
+
+.task-card--done .task-card__title {
+  text-decoration: line-through;
+}
+
+.task-card__title {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.task-card__text {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.task-card__date {
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.task-card__delete {
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  line-height: 1;
+  padding: 0.25rem;
+  border-radius: 6px;
+}
+
+.task-card__delete:hover {
+  color: var(--bs-danger);
+  background: #fbeaea;
+}
