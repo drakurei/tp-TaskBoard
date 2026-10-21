@@ -229,3 +229,8 @@ h1, h2, h3, .card-title {
   font-family: 'Fraunces', Georgia, serif;
   font-size: 1.8rem;
 }
+
+/* ===== Page modification ===== */
+.edit-form {
+  max-width: 500px;
+}

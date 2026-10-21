@@ -62,3 +62,24 @@ export async function deleteTask(id) {
 
     return id
 }
+
+// PUT : l'API simule la modification
+export async function updateTask(task) {
+    // L'API ne connaît que les tâches 1 à 200 : pour les tâches créées par nous
+    // elle répond une erreur 500, donc on ne l'appelle pas et on garde juste la modif en local
+    if (task.id > 200) {
+        return task
+    }
+
+    const response = await fetch(`${API_URL}/${task.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: task.id, title: task.title, completed: task.done, userId: 1 }),
+    })
+
+    if (!response.ok) {
+        throw new Error('Erreur lors de la modification de la tâche')
+    }
+
+    return task
+}
