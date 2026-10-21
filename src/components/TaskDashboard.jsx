@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Row, Col, ProgressBar, Alert, Spinner } from 'react-bootstrap'
 import TaskForm from './TaskForm'
 import TaskList from './TaskList'
 import TaskFilter from './TaskFilter'
-import { getTasks, createTask, deleteTask as deleteTaskApi } from '../services/services'
+import { fetchTasks } from '../features/tasksSlice'
 import { isOverdue } from '../utils/dates'
 
 // Petite carte de statistique (Total / Terminées / En retard)
@@ -17,64 +18,25 @@ function StatCard({ label, value, accent }) {
 }
 
 export default function TaskDashboard() {
-    // Le state des tâches vit ici : il est partagé entre TaskForm et TaskList
-    const [tasks, setTasks] = useState([])
-    const [filter, setFilter] = useState('all')
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+    // Les tâches ne sont plus dans un useState : on les lit dans le store
+    const tasks = useSelector((state) => state.tasks.items)
+    const filter = useSelector((state) => state.tasks.filter)
+    const status = useSelector((state) => state.tasks.status)
+    const error = useSelector((state) => state.tasks.error)
+    const dispatch = useDispatch()
 
     // Au premier rendu, on récupère les tâches depuis l'API
     useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const data = await getTasks()
-                setTasks(data)
-            } catch (error) {
-                console.log(error)
-                setError(error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchTasks()
-    }, [])
-
-    // Appelée par TaskForm quand le formulaire est valide
-    const addTask = async (task) => {
-        try {
-            const newTask = await createTask(task)
-            setTasks((current) => [...current, newTask])
-            setError(null)
-        } catch (error) {
-            setError(error.message)
-        }
-    }
-
-    // Appelée par TaskCard au clic sur le bouton de statut
-    const toggleDone = (id) => {
-        setTasks(tasks.map((task) =>
-            task.id === id ? { ...task, done: !task.done } : task
-        ))
-    }
-
-    // Appelée par TaskCard au clic sur la croix
-    const deleteTask = async (id) => {
-        try {
-            await deleteTaskApi(id)
-            // L'API ne supprime rien : c'est notre state qui retire la tâche de l'affichage
-            setTasks((current) => current.filter((task) => task.id !== id))
-            setError(null)
-        } catch (error) {
-            setError(error.message)
-        }
-    }
+        dispatch(fetchTasks())
+    }, [dispatch])
 
     const doneCount = tasks.filter((task) => task.done).length
     const overdueCount = tasks.filter(isOverdue).length
     const progress = tasks.length === 0 ? 0 : Math.round((doneCount / tasks.length) * 100)
 
     // On filtre selon le bouton choisi, puis on trie par échéance (la plus proche en premier)
-    const visibleTasks = tasks
+    // [...tasks] : on fait une copie car sort() modifie le tableau et le state Redux est en lecture seule
+    const visibleTasks = [...tasks]
         .filter((task) => {
             if (filter === 'todo') return !task.done
             if (filter === 'done') return task.done
@@ -86,7 +48,7 @@ export default function TaskDashboard() {
         <>
             <header className='dashboard-header mb-4'>
                 <p className='dashboard-header__eyebrow'>Tableau de bord</p>
-                <h1 className='dashboard-header__title'>Mes tâches (API)</h1>
+                <h1 className='dashboard-header__title'>Mes tâches (Redux)</h1>
                 <div className='d-flex align-items-center gap-3 mt-3'>
                     <ProgressBar now={progress} className='flex-grow-1' aria-label='Progression' />
                     <span className='fw-semibold'>{progress} %</span>
@@ -106,19 +68,19 @@ export default function TaskDashboard() {
             </Row>
             <Row className='g-4'>
                 <Col lg={4}>
-                    <TaskForm onAddTask={addTask} />
+                    <TaskForm />
                 </Col>
                 <Col lg={8}>
                     <div className='d-flex justify-content-between align-items-center mb-3'>
                         <h2 className='h5 mb-0'>Mes tâches</h2>
-                        <TaskFilter value={filter} onChange={setFilter} />
+                        <TaskFilter />
                     </div>
-                    {loading ? (
+                    {status === 'loading' ? (
                         <div className='d-flex align-items-center gap-2 text-muted'>
                             <Spinner animation='border' size='sm' /> Chargement des tâches...
                         </div>
                     ) : (
-                        <TaskList tasks={visibleTasks} onToggleDone={toggleDone} onDelete={deleteTask} />
+                        <TaskList tasks={visibleTasks} />
                     )}
                 </Col>
             </Row>

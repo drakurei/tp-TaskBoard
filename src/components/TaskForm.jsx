@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Card, Form, Button } from 'react-bootstrap'
 import TaskInput from './TaskInput'
 import TaskTextarea from './TaskTextarea'
@@ -6,6 +7,7 @@ import TaskSelect from './TaskSelect'
 import TaskCheckbox from './TaskCheckbox'
 import { priorityOptions } from '../data/priorityOptions'
 import { todayISO } from '../utils/dates'
+import { createTask } from '../features/tasksSlice'
 
 const initialFormData = {
     title: '',
@@ -15,7 +17,8 @@ const initialFormData = {
     done: false,
 }
 
-export default function TaskForm({ onAddTask }) {
+export default function TaskForm() {
+    const dispatch = useDispatch()
     const [formData, setFormData] = useState(initialFormData)
     const [errors, setErrors] = useState({})
 
@@ -51,14 +54,14 @@ export default function TaskForm({ onAddTask }) {
             return
         }
 
-        // Pas d'erreur : on remonte la tâche au parent
-        onAddTask({
+        // Pas d'erreur : on envoie la tâche au store (qui appelle l'API)
+        dispatch(createTask({
             title: formData.title.trim(),
             description: formData.description.trim(),
             priority: formData.priority,
             dueDate: formData.dueDate,
             done: formData.done,
-        })
+        }))
 
         // On vide le formulaire pour pouvoir créer une autre tâche
         setFormData(initialFormData)

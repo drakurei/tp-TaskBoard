@@ -1,8 +1,12 @@
+import { useDispatch } from 'react-redux'
 import { Button, Badge } from 'react-bootstrap'
+import { toggleTaskStatus, removeTask } from '../features/tasksSlice'
 import { priorityOptions } from '../data/priorityOptions'
 import { formatDate, isOverdue } from '../utils/dates'
 
-export default function TaskCard({ task, onToggleDone, onDelete }) {
+export default function TaskCard({ task }) {
+    const dispatch = useDispatch()
+
     // Retrouve l'option de priorité (label + couleur) à partir de sa valeur
     const priority = priorityOptions.find((option) => option.value === task.priority)
     const overdue = isOverdue(task)
@@ -15,7 +19,7 @@ export default function TaskCard({ task, onToggleDone, onDelete }) {
                     type='button'
                     className='task-card__delete'
                     aria-label={`Supprimer « ${task.title} »`}
-                    onClick={() => onDelete(task.id)}
+                    onClick={() => dispatch(removeTask(task.id))}
                 >
                     ✕
                 </button>
@@ -28,7 +32,7 @@ export default function TaskCard({ task, onToggleDone, onDelete }) {
                 <Button
                     size='sm'
                     variant={task.done ? 'outline-success' : 'outline-secondary'}
-                    onClick={() => onToggleDone(task.id)}
+                    onClick={() => dispatch(toggleTaskStatus(task.id))}
                 >
                     {task.done ? '✓ Terminée' : 'Marquer comme terminée'}
                 </Button>
