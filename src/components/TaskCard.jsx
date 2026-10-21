@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
-import { Button, Badge } from 'react-bootstrap'
-import { toggleTaskStatus, removeTask } from '../features/tasksSlice'
+import { Button, Form } from 'react-bootstrap'
+import { toggleTaskStatus, removeTask, changePriority } from '../features/tasksSlice'
 import { priorityOptions } from '../data/priorityOptions'
 import { formatDate, isOverdue } from '../utils/dates'
 
@@ -34,11 +34,22 @@ export default function TaskCard({ task }) {
                     variant={task.done ? 'outline-success' : 'outline-secondary'}
                     onClick={() => dispatch(toggleTaskStatus(task.id))}
                 >
-                    {task.done ? '✓ Terminée' : 'Marquer comme terminée'}
+                    {task.done ? '✓ Terminée' : '⏳ En cours'}
                 </Button>
-                <Badge bg={priority.variant}>
-                    {priority.label}
-                </Badge>
+                {/* Changer la priorité directement depuis la carte */}
+                <Form.Select
+                    size='sm'
+                    className='task-card__priority'
+                    aria-label='Priorité'
+                    value={task.priority}
+                    onChange={(e) => dispatch(changePriority({ id: task.id, priority: e.target.value }))}
+                >
+                    { priorityOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    )) }
+                </Form.Select>
             </div>
         </article>
     )

@@ -164,3 +164,7 @@ h1, h2, h3, .card-title {
   color: var(--bs-danger);
   background: #fbeaea;
 }
+
+.task-card__priority {
+  width: auto;
+}
