@@ -73,6 +73,15 @@
 
 **Solution :** component `ProtectedRoute` qui redirige vers `/login` avec `<Navigate>` si `state.auth.user` est vide. L'utilisateur connecté est gardé dans le `localStorage` pour ne pas être déconnecté après un F5.
 
+### 9. Déploiement GitHub Pages : page blanche et erreur 404 sur F5 (piège évité)
+
+**Problème :** sur GitHub Pages le site est dans `/tp-TaskBoard/` et pas à la racine. Sans réglage, les fichiers JS ne sont pas trouvés (page blanche) et le router ne reconnaît aucune page. Et GitHub Pages ne connaît que `index.html` : un F5 sur `/tp-TaskBoard/profile` donne une 404.
+
+**Solution :**
+- `base: '/tp-TaskBoard/'` dans `vite.config.js`
+- `<BrowserRouter basename={import.meta.env.BASE_URL}>` dans `App.jsx`
+- dans le script `predeploy`, on copie `index.html` en `404.html` : GitHub Pages renvoie alors notre app à la place de sa page 404, et React Router affiche la bonne page.
+
 ## À faire plus tard
 
 - [ ] Vrai back-end pour les comptes (là les mots de passe sont en clair dans le localStorage, ce n'est pas sécurisé)
