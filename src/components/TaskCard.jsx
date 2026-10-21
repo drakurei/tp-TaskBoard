@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { Button, Form } from 'react-bootstrap'
 import { toggleTaskStatus, removeTask, changePriority } from '../features/tasksSlice'
 import { priorityOptions } from '../data/priorityOptions'
@@ -14,7 +15,10 @@ export default function TaskCard({ task }) {
     return (
         <article className={`task-card task-card--${priority.variant} ${task.done ? 'task-card--done' : ''}`}>
             <div className='d-flex justify-content-between align-items-start gap-2'>
-                <h3 className='task-card__title'>{task.title}</h3>
+                <h3 className='task-card__title'>
+                    {/* Le titre mène à la page détails de la tâche */}
+                    <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+                </h3>
                 <button
                     type='button'
                     className='task-card__delete'
