@@ -209,3 +209,23 @@ h1, h2, h3, .card-title {
   border-radius: var(--radius);
   max-width: 700px;
 }
+
+/* ===== Connexion / inscription ===== */
+.auth-card {
+  border-radius: var(--radius);
+  max-width: 420px;
+}
+
+/* ===== Profil ===== */
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.8rem;
+}
