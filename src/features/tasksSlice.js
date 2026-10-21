@@ -14,6 +14,10 @@ const initialState = {
 // GET : récupère les tâches
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
     return await api.getTasks()
+}, {
+    // On ne charge qu'une seule fois : sinon le StrictMode (et chaque retour sur le dashboard)
+    // relançait l'appel et écrasait les tâches ajoutées / supprimées
+    condition: (_, { getState }) => getState().tasks.status === 'idle',
 })
 
 // POST : crée la tâche côté API puis l'ajoute dans le store avec addTask
