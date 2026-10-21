@@ -37,6 +37,13 @@ export const removeTask = createAsyncThunk('tasks/removeTask', async (id, { disp
     return id
 })
 
+// PUT : modifie la tâche côté API puis dans le store avec updateTask
+export const editTask = createAsyncThunk('tasks/editTask', async (task, { dispatch }) => {
+    const updatedTask = await api.updateTask(task)
+    dispatch(updateTask(updatedTask))
+    return updatedTask
+})
+
 const tasksSlice = createSlice({
     name: 'tasks',
     initialState,
@@ -50,6 +57,14 @@ const tasksSlice = createSlice({
         // Supprimer une tâche : action.payload = id
         deleteTask: (state, action) => {
             state.items = state.items.filter((task) => task.id !== action.payload)
+        },
+
+        // Modifier une tâche : action.payload = la tâche complète (avec son id)
+        updateTask: (state, action) => {
+            const index = state.items.findIndex((task) => task.id === action.payload.id)
+            if (index !== -1) {
+                state.items[index] = action.payload
+            }
         },
 
         // Basculer En cours <-> Terminée : action.payload = id
@@ -101,10 +116,16 @@ const tasksSlice = createSlice({
             .addCase(removeTask.rejected, (state, action) => {
                 state.error = action.error.message
             })
+            .addCase(editTask.fulfilled, (state) => {
+                state.error = null
+            })
+            .addCase(editTask.rejected, (state, action) => {
+                state.error = action.error.message
+            })
     },
 })
 
-export const { addTask, deleteTask, toggleTaskStatus, setFilter, changePriority } = tasksSlice.actions
+export const { addTask, deleteTask, updateTask, toggleTaskStatus, setFilter, changePriority } = tasksSlice.actions
 
 export default tasksSlice.reducer
 

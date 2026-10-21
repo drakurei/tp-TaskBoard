@@ -64,6 +64,9 @@ export default function TaskDetailsPage() {
                         <Button variant='outline-success' onClick={() => dispatch(toggleTaskStatus(task.id))}>
                             {task.done ? 'Remettre en cours' : 'Marquer comme terminée'}
                         </Button>
+                        <Link to={`/tasks/${task.id}/edit`} className='btn btn-outline-primary'>
+                            Modifier
+                        </Link>
                         <Button variant='outline-danger' onClick={handleDelete}>
                             Supprimer
                         </Button>

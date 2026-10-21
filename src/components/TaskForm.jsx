@@ -7,7 +7,7 @@ import TaskSelect from './TaskSelect'
 import TaskCheckbox from './TaskCheckbox'
 import { priorityOptions } from '../data/priorityOptions'
 import { todayISO } from '../utils/dates'
-import { createTask } from '../features/tasksSlice'
+import { createTask, editTask } from '../features/tasksSlice'
 
 const initialFormData = {
     title: '',
@@ -17,9 +17,12 @@ const initialFormData = {
     done: false,
 }
 
-export default function TaskForm() {
+// Sans prop "task" : formulaire de création
+// Avec une prop "task" : formulaire de modification (pré-rempli)
+export default function TaskForm({ task, onSaved }) {
     const dispatch = useDispatch()
-    const [formData, setFormData] = useState(initialFormData)
+    const isEditing = task !== undefined
+    const [formData, setFormData] = useState(isEditing ? task : initialFormData)
     const [errors, setErrors] = useState({})
 
     // Un seul handler pour tous les champs, grâce à l'attribut name
@@ -54,24 +57,30 @@ export default function TaskForm() {
             return
         }
 
-        // Pas d'erreur : on envoie la tâche au store (qui appelle l'API)
-        dispatch(createTask({
+        const cleanTask = {
             title: formData.title.trim(),
             description: formData.description.trim(),
             priority: formData.priority,
             dueDate: formData.dueDate,
             done: formData.done,
-        }))
+        }
 
-        // On vide le formulaire pour pouvoir créer une autre tâche
-        setFormData(initialFormData)
+        // Pas d'erreur : on envoie la tâche au store (qui appelle l'API)
+        if (isEditing) {
+            dispatch(editTask({ ...cleanTask, id: task.id }))
+            onSaved()
+        } else {
+            dispatch(createTask(cleanTask))
+            // On vide le formulaire pour pouvoir créer une autre tâche
+            setFormData(initialFormData)
+        }
     }
 
     return (
         <Card className='form-card border-0'>
             <Card.Body>
                 <Card.Title className='mb-4'>
-                    Nouvelle tâche
+                    {isEditing ? 'Modifier la tâche' : 'Nouvelle tâche'}
                 </Card.Title>
                 <Form onSubmit={handleSubmit} noValidate>
                     <TaskInput
@@ -94,7 +103,7 @@ export default function TaskForm() {
                         type='date'
                         label='Échéance'
                         name='dueDate'
-                        min={todayISO()}
+                        min={isEditing ? undefined : todayISO()}
                         value={formData.dueDate}
                         onChange={handleChange}
                         error={errors.dueDate}
@@ -113,7 +122,7 @@ export default function TaskForm() {
                         onChange={handleChange}
                     />
                     <Button type='submit' variant='primary' className='w-100'>
-                        Ajouter la tâche
+                        {isEditing ? 'Enregistrer' : 'Ajouter la tâche'}
                     </Button>
                 </Form>
             </Card.Body>
