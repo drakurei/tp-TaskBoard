@@ -2,6 +2,8 @@
 
 Dashboard de gestion de tâches en React, avec Redux Toolkit et l'API de test [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
 
+**Démo :** https://drakurei.github.io/tp-TaskBoard/
+
 ## Fonctionnalités
 
 - Chargement des tâches depuis l'API (`GET`)
@@ -48,3 +50,9 @@ npm run dev
 ```
 
 Les bugs rencontrés et leurs solutions sont dans [TODO.md](TODO.md).
+
+## Déployer
+
+```bash
+npm run deploy
+```

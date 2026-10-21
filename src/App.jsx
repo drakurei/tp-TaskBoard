@@ -12,7 +12,8 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
   return (
-    <BrowserRouter>
+    // basename : le site est dans /tp-TaskBoard/ sur GitHub Pages (et / en local)
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className='min-vh-100'>
         <NavBar />
         <Container className='py-4 py-lg-5'>
